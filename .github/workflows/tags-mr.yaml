@@ -9,7 +9,7 @@ jobs:
   tag:
     name: Create Tag
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request' && env.GITHUB_REF_SLUG == 'main'
+    if: github.event_name == 'pull_request' && github.ref == 'main'
     steps:
       - name: Checkout code
         uses: actions/checkout@v1
