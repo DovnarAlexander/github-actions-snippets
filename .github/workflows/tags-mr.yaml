@@ -13,10 +13,15 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v1
+      - name: Bump version (Dry Run)
+        id: tag_dry
+        uses: anothrNick/github-tag-action@1.34.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          WITH_V: true
+          DRY_RUN: true
       - name: Bump version and push tag
         uses: anothrNick/github-tag-action@1.34.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PRERELEASE_SUFFIX: rc
-          WITH_V: true
-          DRY_RUN: true
+          CUSTOM_TAG: ${{ steps.tag_dry.outputs.new_tag }}-rc
