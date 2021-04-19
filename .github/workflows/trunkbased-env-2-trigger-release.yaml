@@ -1,0 +1,35 @@
+---
+
+name: Trunkbased example (Deploy 2)
+on:
+  release:
+    types: [released]
+
+jobs:
+
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v1
+      - run: env
+      - run: echo deploy
+
+  release-update:
+    name: Release update
+    runs-on: ubuntu-latest
+    needs: [deploy]
+    steps:
+      - name: Get the version
+        id: get_version
+        run: echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3)
+      - name: Update release name
+        uses: meeDamian/github-release@master
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          name: Release ${{ steps.get_version.outputs.VERSION }}
+          tag: ${{ steps.get_version.outputs.VERSION }}
+          draft: false
+          prerelease: true
+          allow_override: true

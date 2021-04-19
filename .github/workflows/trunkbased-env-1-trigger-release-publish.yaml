@@ -1,0 +1,13 @@
+---
+
+name: Trunkbased example (Deploy 1)
+on:
+  release:
+    types: [published, prereleased]
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo deploy

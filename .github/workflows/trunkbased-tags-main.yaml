@@ -1,0 +1,30 @@
+---
+
+name: Trunkbased example (Push to master)
+on:
+  push:
+    branches: ["main"]
+
+jobs:
+  tag:
+    name: Create tag and Draft Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v1
+      - name: Bump version and push tag
+        id: create_tag
+        uses: mathieudutour/github-tag-action@v5.5
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create or Update release
+        uses: meeDamian/github-release@master
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ steps.create_tag.outputs.new_tag }}
+          name: Release ${{ steps.create_tag.outputs.new_tag }}-beta
+          body: |
+            ${{ steps.create_tag.outputs.changelog }}
+          draft: true
+          prerelease: true
+          allow_override: true
