@@ -19,14 +19,20 @@ jobs:
         uses: mikepenz/release-changelog-builder-action@v1.7.2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create tag (Dry-Run)
+        id: build_tag
+        uses: anothrNick/github-tag-action@1.34.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          WITH_V: true
+          DRY_RUN: true
       - name: Create tag
         id: create_tag
         uses: anothrNick/github-tag-action@1.34.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          RELEASE_BRANCHES: fake-branch-to-create-rc
-          PRERELEASE_SUFFIX: rc
           WITH_V: true
+          CUSTOM_TAG: ${{ steps.build_tag.outputs.new_tag }}-${{ github.sha }}
       - name: Create Release
         uses: actions/create-release@latest
         env:
