@@ -32,3 +32,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           WITH_V: true
           CUSTOM_TAG: ${{ steps.build_tag.outputs.new_tag }}-${{ github.sha }}
+
