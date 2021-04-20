@@ -3,7 +3,7 @@
 name: Trunkbased example (Deploy 1)
 on:
   release:
-    types: [created, edited]
+    types: [published, prereleased]
 
 jobs:
   deploy:
@@ -13,7 +13,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v1
       - run: env
-      - run: echo '${{ github.event.inputs.github_tag }} and ${{ github.event.inputs.docker_tag }} deployment'
+      - run: echo deploy
 
   update-release:
     name: Pre-Release creation
@@ -21,16 +21,14 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v1
-      - run: echo ${{ github.event }}
-
-      # - name: Create or Update release
-      #   uses: meeDamian/github-release@master
-      #   with:
-      #     token: ${{ secrets.GITHUB_TOKEN }}
-      #     tag: ${{ steps.create_tag.outputs.new_tag }}
-      #     name: Release v${{ steps.build_tag.outputs.new_tag }}
-      #     body: |
-      #       ${{ steps.build_tag.outputs.changelog }}
-      #     draft: true
-      #     prerelease: true
-      #     allow_override: true
+      - name: Get Tag name
+        id: tag_name
+        run: echo ::set-output name=tag::$(echo $GITHUB_REF | cut -d / -f 3)
+      - name: Create or Update release
+        uses: meeDamian/github-release@master
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ steps.tag_name.outputs.tag }}
+          draft: false
+          prerelease: true
+          allow_override: true
