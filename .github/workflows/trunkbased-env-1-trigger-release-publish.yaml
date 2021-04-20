@@ -1,0 +1,16 @@
+---
+
+name: Trunkbased example (Deploy 1)
+on:
+  release:
+    types: [published, prereleased]
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v1
+      - run: env
+      - run: echo deploy
