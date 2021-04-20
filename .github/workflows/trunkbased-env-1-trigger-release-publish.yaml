@@ -12,5 +12,19 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v1
-      - run: env
       - run: echo deploy
+
+  release-update:
+    name: Release update
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get the version
+        id: get_version
+        run: echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3)
+      - name: Remove RC from the Release name
+        uses: meeDamian/github-release@master
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          name: Release ${{ steps.get_version.outputs.VERSION }}
+          prerelease: true
+          allow_override: true
