@@ -12,35 +12,27 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v1
-        with:
-          fetch-depth: '0'
-      - name: Build Changelog
-        id: build_changelog
-        uses: mikepenz/release-changelog-builder-action@v1.7.2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Create tag (Dry-Run)
+      - name: Bump version and push tag (Dry-Run)
         id: build_tag
-        uses: anothrNick/github-tag-action@1.34.0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          WITH_V: true
-          DRY_RUN: true
-      - name: Create tag
+        uses: mathieudutour/github-tag-action@v5.5
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          tag_prefix: ""
+          dry_run: true
+      - name: Bump version and push tag
         id: create_tag
-        uses: anothrNick/github-tag-action@1.34.0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          WITH_V: true
-          CUSTOM_TAG: ${{ steps.build_tag.outputs.new_tag }}-${{ github.sha }}
+        uses: mathieudutour/github-tag-action@v5.5
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          custom_tag: ${{ steps.build_tag.outputs.new_tag }}-rc.${{ github.sha }}
       - name: Create Release
         uses: actions/create-release@latest
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ steps.create_tag.outputs.new_tag }}
-          release_name: Release ${{ steps.create_tag.outputs.new_tag }}
+          release_name: Release v${{ steps.build_tag.outputs.new_tag }}-RC
           body: |
-            ${{ steps.build_changelog.outputs.changelog }}
+            ${{ steps.build_tag.outputs.changelog }}
           draft: false
           prerelease: true
