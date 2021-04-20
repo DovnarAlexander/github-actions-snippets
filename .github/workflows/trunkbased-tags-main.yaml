@@ -22,7 +22,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: ${{ steps.create_tag.outputs.new_tag }}
-          name: Release ${{ steps.create_tag.outputs.new_tag }}-RC
+          name: Release ${{ steps.create_tag.outputs.new_tag }}-beta
           body: |
             ${{ steps.create_tag.outputs.changelog }}
           draft: true
