@@ -25,6 +25,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           name: Release ${{ steps.create_tag.outputs.new_tag }}
           tag: ${{ steps.get_version.outputs.VERSION }}
+          allow_override: true
 
   deploy:
     name: Deploy
