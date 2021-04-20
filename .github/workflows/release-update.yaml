@@ -1,0 +1,14 @@
+---
+
+name: Release update
+on:
+  released:
+    types: ["released"]
+
+jobs:
+  release:
+    name: Update release
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v1
+      - run: env
