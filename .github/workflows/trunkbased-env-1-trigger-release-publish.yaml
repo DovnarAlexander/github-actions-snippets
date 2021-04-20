@@ -18,7 +18,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           name: Release ${{ steps.get_version.outputs.VERSION }}
-          tag: ${{ steps.get_version.outputs.VERSION }}-rc.${{ github.sha }}
+          tag: ${{ steps.get_version.outputs.VERSION }}
           allow_override: true
 
   deploy:
