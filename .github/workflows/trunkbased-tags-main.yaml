@@ -7,7 +7,7 @@ on:
 
 jobs:
   tag:
-    name: Create tag
+    name: Create tag and Draft Release
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -29,7 +29,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: ${{ steps.create_tag.outputs.new_tag }}
-          name: Release v${{ steps.build_tag.outputs.new_tag }}-RC
+          name: Release ${{ steps.build_tag.outputs.new_tag }}-RC
           body: |
             ${{ steps.build_tag.outputs.changelog }}
           draft: true
