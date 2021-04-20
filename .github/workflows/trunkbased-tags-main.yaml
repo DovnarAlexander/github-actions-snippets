@@ -12,25 +12,20 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v1
-      - name: Bump version and push tag (Dry-Run)
-        id: build_tag
-        uses: mathieudutour/github-tag-action@v5.5
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          tag_prefix: ""
-          dry_run: true
       - name: Bump version and push tag
         id: create_tag
         uses: mathieudutour/github-tag-action@v5.5
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          custom_tag: ${{ steps.build_tag.outputs.new_tag }}-rc.${{ github.sha }}
+          release_branches: dummy-branch
+          pre_release_branches: master,main
+          append_to_pre_release_tag: rc
       - name: Create or Update release
         uses: meeDamian/github-release@master
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: ${{ steps.create_tag.outputs.new_tag }}
-          name: Release v${{ steps.build_tag.outputs.new_tag }}-RC
+          name: Release ${{ steps.create_tag.outputs.new_tag }}
           body: |
             ${{ steps.build_tag.outputs.changelog }}
           draft: true

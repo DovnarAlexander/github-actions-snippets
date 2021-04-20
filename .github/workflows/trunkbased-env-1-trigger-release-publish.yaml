@@ -13,17 +13,11 @@ jobs:
       - name: Get the version
         id: get_version
         run: echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3)
-      - name: Bump version and push tag
-        id: create_tag
-        uses: mathieudutour/github-tag-action@v5.5
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          custom_tag: ${{ steps.get_version.outputs.VERSION }}
       - name: Update release name
         uses: meeDamian/github-release@master
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          name: Release ${{ steps.create_tag.outputs.new_tag }}
+          name: Release ${{ steps.get_version.outputs.VERSION }}
           tag: ${{ steps.get_version.outputs.VERSION }}
           allow_override: true
 
