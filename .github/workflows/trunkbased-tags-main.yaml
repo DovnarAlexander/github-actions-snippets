@@ -1,13 +1,13 @@
 ---
 
-name: Tags Mainline
+name: Trunkbased example (Push to master)
 on:
   push:
     branches: ["main"]
 
 jobs:
   tag:
-    name: Create Tag
+    name: Create tag
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -24,15 +24,14 @@ jobs:
         uses: mathieudutour/github-tag-action@v5.5
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          custom_tag: ${{ steps.build_tag.outputs.new_tag }}-rc.${{ github.sha }}
-      - name: Create Release
-        uses: actions/create-release@latest
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          custom_tag: ${{ steps.build_tag.outputs.new_tag }}-${{ github.sha }}
+      - name: Trigger the deployment
+        uses: benc-uk/workflow-dispatch@v1
         with:
-          tag_name: ${{ steps.create_tag.outputs.new_tag }}
-          release_name: Release v${{ steps.build_tag.outputs.new_tag }}-RC
-          body: |
-            ${{ steps.build_tag.outputs.changelog }}
-          draft: false
-          prerelease: true
+          workflow: Deployment (Blue Env)
+          token: ${{ secrets.GROUP_TOKEN }}
+          inputs: >
+            {
+              "github_tag": "${{ steps.create_tag.outputs.new_tag }}",
+              "docker_tag": "${{ steps.create_tag.outputs.new_tag }}"
+            }

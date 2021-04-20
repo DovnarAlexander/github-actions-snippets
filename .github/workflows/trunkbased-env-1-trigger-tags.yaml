@@ -1,0 +1,49 @@
+---
+
+name: Trunkbased example (Deploy 1)
+on:
+  workflow_dispatch:
+    inputs:
+      github_tag:
+        description: 'GitHub Tag to deploy'
+        required: true
+      docker_tag:
+        description: 'Docker Tag to deploy'
+        required: false
+        default: 'latest'
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v1
+      - run: env
+      - run: echo '${{ github.event.inputs.github_tag }} and ${{ github.event.inputs.docker_tag }} deployment'
+
+
+  update-release:
+    name: Pre-Release creation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v1
+      - name: Bump version and push tag (Dry-Run)
+        id: build_tag
+        uses: mathieudutour/github-tag-action@v5.5
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          tag_prefix: ""
+          dry_run: true
+      - name: Update release
+        uses: meeDamian/github-release@2.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ github.event.inputs.github_tag }}
+          name: Release v${{ steps.build_tag.outputs.tag_name }}
+          body: |
+            ${{ steps.build_tag.outputs.changelog }}
+          draft: true
+          prerelease: true
+          allow_override: true
