@@ -25,13 +25,14 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           custom_tag: ${{ steps.build_tag.outputs.new_tag }}-${{ github.sha }}
-      - name: Trigger the deployment
-        uses: benc-uk/workflow-dispatch@v1
+      - name: Create or Update release
+        uses: meeDamian/github-release@master
         with:
-          workflow: Deployment (Blue Env)
-          token: ${{ secrets.GROUP_TOKEN }}
-          inputs: >
-            {
-              "github_tag": "${{ steps.create_tag.outputs.new_tag }}",
-              "docker_tag": "${{ steps.create_tag.outputs.new_tag }}"
-            }
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ steps.create_tag.outputs.new_tag }}
+          name: Release v${{ steps.build_tag.outputs.new_tag }}
+          body: |
+            ${{ steps.build_tag.outputs.changelog }}
+          draft: true
+          prerelease: true
+          allow_override: true
