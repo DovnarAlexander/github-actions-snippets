@@ -30,7 +30,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: ${{ steps.create_tag.outputs.new_tag }}
-          name: Release ${{ steps.build_tag.outputs.new_tag }}-RC
+          name: Release v${{ steps.build_tag.outputs.new_tag }}-RC
           body: |
             ${{ steps.build_tag.outputs.changelog }}
           draft: true
