@@ -20,6 +20,7 @@ jobs:
           release_branches: dummy-branch
           pre_release_branches: master,main
           append_to_pre_release_tag: rc
+          default_bump: none
       - name: Create or Update release
         uses: meeDamian/github-release@master
         with:
