@@ -3,7 +3,6 @@
 name: Trunkbased example (Push to master)
 on:
   push:
-    branches-ignore: ["main"]
 
 jobs:
   env:
