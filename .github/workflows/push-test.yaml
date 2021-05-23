@@ -1,0 +1,15 @@
+---
+
+name: Trunkbased example (Push to master)
+on:
+  push:
+    branches-ignore: ["main"]
+
+jobs:
+  env:
+    name: Analyze all environment
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v1
+      - run: env
