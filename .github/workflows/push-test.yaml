@@ -3,6 +3,7 @@
 name: Trunkbased example (Push to master)
 on:
   push:
+  workflow_dispatch:
 
 jobs:
   env:
